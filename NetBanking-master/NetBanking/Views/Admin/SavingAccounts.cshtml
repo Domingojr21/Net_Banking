@@ -1,0 +1,80 @@
+﻿@* Strong type views *@
+@model List<NetBanking.Core.Application.ViewModel.SavingAccount.SavingAccountVM>
+@{
+    string principal = null;
+}
+
+<div class="row align-content-center">
+    <div class="col-8 offset-2">
+
+        <div class="card">
+            <div class="card-header bg-dark text-light">
+                 Cuentas de Ahorro
+                <div class="text-end">
+                    <a class="btn btn-success float-end text-black" style="background-color: #f6eaff; color: white;" asp-controller="Admin" asp-action="CreateSavingAccounts">Nueva Cuenta</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Numero de Cuenta</th>
+                            <th scope="col">Categoría de la Cuenta</th>
+                            <th scope="col">Monto</th>
+                            <th scope="col">Eliminar Cuenta</th>                       
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.UserName</td>
+                                <td>@item.IdentifyingNumber</td>
+                                @if(item.IsPrincipal == true)
+                                {
+                                    principal = "Principal";
+                                }
+                                else
+                                {
+                                    principal = "Secundaria";
+                                }
+                                <td>@principal</td>
+                                <td>@item.Amount</td>
+
+                               
+
+                                <td>
+                                    @if (!item.IsPrincipal)
+                                    {
+                                        <a asp-controller="Admin" asp-action="DeleteSavingAccounts" asp-route-id="@item.Id" class="btn btn-danger">
+                                            <i class="fa-solid fa-eraser"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-danger" disabled data-bs-toggle="tooltip" data-bs-placement="top" title="No se puede borrar porque es una cuenta principal">
+                                            <i class="fa-solid fa-eraser"></i>
+                                        </button>
+                                    }
+                                </td>
+                          
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script src="https://kit.fontawesome.com/47ea8ef61d.js" crossorigin="anonymous"></script>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+</script>
+

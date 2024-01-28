@@ -1,0 +1,146 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using NetBanking.Core.Application.Enums;
+@using NetBanking.Core.Application.ViewModel.SavingAccount;
+@using NetBanking.Core.Application.ViewModel.Transaction;
+@inject IHttpContextAccessor httpContextAccessor
+@model SCPaymentExpressVM;
+@{
+    ViewData["Title"] = "Confirm Pago Expreso";
+}
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center pt-5 mt-5 m-1">
+            <div class="col-md-6 col-sm-8 col-xl-4 col-lg-5 formulario">
+                <form method="post" asp-controller="Payment" asp-action="MakePaymentExpress" enctype="multipart/form-data">
+                    <div class="form-group text-center pt-3">
+                        <h1 class="text-light">Pago Expreso</h1>
+                    </div>
+                    <div class="card" style="border: 2px solid black;">
+                        <div class="form-group text-center pt-3 text-dark" style="background-color:white;">
+                            <p class="fw-bold">Nombre del Dueño: <label>@Model.FirstName</label></p>
+                            <p class="fw-bold">Apellido del Dueño:  <label>@Model.LastName</label></p>
+                            <p class="fw-bold">Número de Cuenta del Dueño:  <label>@Model.SaveTransactionVM.DestinationAccountNumber</label></p>
+                            <p class="fw-bold">La Cantidad que Depositará: <label>@Model.SaveTransactionVM.Amount</label></p>
+                            <p class="fw-bold">Número de Cuenta de Dónde Sale: <label>@Model.SaveTransactionVM.OriginAccountNumber</label></p>
+                        </div>
+                        <h5 class="fw-bold text-center">Desea Realizar el Pago</h5>
+                        <div class="form-group text-center mt-4 mb-5">
+                            <a asp-controller="Payment" asp-action="MakePaymentExpress" asp-route-AccountHolderId="@Model.SaveTransactionVM.UserNameOfAccountHolder" asp-route-OriginAccount="@Model.SaveTransactionVM.OriginAccountNumber" asp-route-TransactionTypeId="@Model.SaveTransactionVM.TransactionTypeId" asp-route-Description="@Model.SaveTransactionVM.Description" asp-route-DestinationAccount="@Model.SaveTransactionVM.DestinationAccountNumber" asp-route-Amount="@Model.SaveTransactionVM.Amount" type="submit" class="btn btn-primary btn-outline-dark" style="background-color: #2f5b75; color: white;">Realizar Pago</a>
+                           
+                            <a asp-controller="Client" asp-action="Index" class="btn btn-danger">Cancelar</a>
+                        </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+        </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+
+<script>
+    function toggleAdminSection() {
+        var isAdminSelect = document.getElementById('isAdminSelect');
+        var clientSection = document.getElementById('clientSection');
+        clientSection.style.display = isAdminSelect.value === 'false' ? 'block' : 'none';
+    }
+    toggleAdminSection();
+</script>
+
+<style>
+    body {
+        background-color: #dcd2ff;
+    }
+
+    .formulario {
+        background: rgba(0, 0, 0, .1);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+        color: white;
+    }
+
+    .form-control {
+        border-style: none;
+        transition: 0.5s ease-in;
+        outline: none;
+        box-shadow: none;
+    }
+
+        .form-control:focus {
+            background: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: black;
+        }
+
+    .ingresar {
+        background: #222A3F;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: 700 !important;
+        color: white;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+        transition: 0.5s ease-in;
+    }
+
+        .ingresar:hover {
+            color: white;
+        }
+
+    .olvide {
+        color: white;
+        text-decoration-style: none;
+        text-decoration-line: none;
+    }
+
+        .olvide:hover {
+            color: white;
+            text-decoration-style: none;
+            text-decoration-line: none;
+            cursor: pointer;
+        }
+
+    .olvide1 {
+        color: white;
+        text-decoration-style: none;
+        text-decoration-line: none;
+        font-size: 20px;
+        font-weight: 700 !important;
+        padding: 10px;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, .5);
+    }
+
+        .olvide1:hover {
+            color: white;
+            text-decoration-style: none;
+            text-decoration-line: none;
+            cursor: pointer;
+        }
+</style>
+
+<script>
+    var passwordInput = document.getElementById("passwordInput");
+    var togglePassword = document.getElementById("togglePassword");
+
+    togglePassword.addEventListener("click", function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.classList.remove("fa-eye-slash");
+            togglePassword.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password";
+            togglePassword.classList.remove("fa-eye");
+            togglePassword.classList.add("fa-eye-slash");
+        }
+    });
+</script>
+

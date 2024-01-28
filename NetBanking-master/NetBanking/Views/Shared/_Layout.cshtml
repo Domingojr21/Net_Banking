@@ -1,0 +1,126 @@
+﻿@using Microsoft.AspNetCore.Http
+@using NetBanking.Core.Application.Dtos.Account
+@using NetBanking.Core.Application.Helpers;
+@using NetBanking.Core.Application.ViewModels.User
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    var User = httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
+    var isAdmin = User != null ? User.Roles.Any(r => r == "Admin") : false;
+    var isBasic = User != null ? User.Roles.Any(r => r == "Client") : false;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NetBanking</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/NetBanking.styles.css" asp-append-version="true" />
+</head>
+<body>
+    @if (User != null)
+    {
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color: #f6eaff; color: white;">
+            <div class="container-fluid">
+                @if (User.Roles.Contains("Admin")){
+                    <a class="navbar-brand" asp-controller="Admin" asp-action="DashBoard">Net Banking</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                }
+                else
+                {
+                    <a class="navbar-brand" asp-controller="Client" asp-action="Index">Net Banking</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                }
+                
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.Roles.Contains("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="DashBoard">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Lista de Usuarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="productDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Edit Client Products
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="productDropdown" style="background-color: #f6eaff;">
+                                        <li><a class="dropdown-item" href="@Url.Action("CreditCards", "Admin")">Tarjetas de Crédito</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("SavingAccounts", "Admin")">Cuentas de Ahorro</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("Loans", "Admin")">Préstamos</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Client" asp-action="Index">Productos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Beneficiary" asp-action="Index">Beneficiarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Payment" asp-action="Transaction">Transferecia entre cuentas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="CashOut" asp-action="Index">Avance de efectivo</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="productDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Payments
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="productDropdown" style="background-color: #f6eaff;">
+                                        <li><a class="dropdown-item" href="@Url.Action("PaymentExpress", "Payment")">Pago Expreso</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("PaymentBeneficiary", "Payment")">Pago Beneficiario</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("PaymentCreditCard", "Payment")">Pago Tarjeta de Credito</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("PaymentLoan", "Payment")">Pago Prestamo</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                      
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item align-content-end">
+                            <a class="nav-link text-black float-end fw-bold" asp-controller="User" asp-action="LogOut">Cerrar Session (@(User.UserName))</a>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </nav>
+    }
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container text-black">
+            &copy; 2023 - SED NetBanking - Eliott Reyes - Domingo Ruiz - Samuel Jiménez
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

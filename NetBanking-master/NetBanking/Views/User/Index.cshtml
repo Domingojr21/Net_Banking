@@ -1,0 +1,151 @@
+﻿@using NetBanking.Core.Application.ViewModels.User
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="container">
+    <h1 class="text-light text-center mt-5">Welcome To SED Bank, The Bank of the People</h1>
+    <div class="row justify-content-center pt-5 mt-5 m-1">
+        <div class="col-md-6 col-sm-8 col-xl-4 col-lg-5 mb-4 formulario">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                @if (Model.HasError)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert"> 
+                        <p>@Model.Error</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                <form method="post" asp-controller="User" asp-action="Index">
+                    <div class="form-group text-center pt-3">
+                        <h1 class="text-light text-center">Sign In</h1>
+                    </div>
+                    <div class="form-group mx-sm-4 pt-3 mt-2 mb-2">
+                    <input asp-for="Email" type="text" class="form-control bg-white col-10" placeholder="Ingrese su Email">
+                    </div>
+                <div class="form-group mx-sm-4 pb-3 mb-4">
+                    <input asp-for="Password" class="form-control bg-white col-10 " placeholder="Enter your Password" id="passwordInput">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <i class="fa fa-eye-slash" id="togglePassword"></i>
+                </div>
+                <div class="form-group mx-sm-4 pb-2 mb-5 mt-1">
+                     <input type="submit" class="btn btn-block ingresar rounded col-10 offset-1" value="INGRESAR">
+                 </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+<style>
+    body {
+        background-color: #1b96f3;
+    }
+
+
+    .formulario {
+        background: rgba(0, 0, 0, .1);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+        color: white;
+    }
+
+    .form-control {
+        border-style: none;
+        transition: 0.5s ease-in;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .form-control-password {
+        border-style: none;
+        transition: 0.5s ease-in;
+        outline: none;
+        box-shadow: none;
+    }
+
+        .form-control:focus {
+            background: none;
+            box-shadow: none;
+            outline: auto;
+        }
+
+    .form-control-password {
+        background: none;
+        box-shadow: none;
+        outline: auto;
+    }
+
+        .form-control::placeholder {
+            color: black;
+        }
+
+    .ingresar {
+        background: #0f3047;
+        padding: 12px;
+        font-size: 20px;
+        font-weight: 700 !important;
+        color: white;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+        transition: 0.5s ease-in;
+    }
+
+        .ingresar:hover {
+            color: white;
+        }
+
+    .olvide {
+        color: white;
+        text-decoration-style: none;
+        text-decoration-line: none;
+    }
+
+        .olvide:hover {
+            color: white;
+            text-decoration-style: none;
+            text-decoration-line: none;
+            cursor: pointer;
+        }
+
+    .registrarse {
+        color: white;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: 700 !important;
+        color: white;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+        transition: 0.5s ease-in;
+        background: #122434;
+    }
+
+        .registrarse:hover {
+            color: white;
+            text-decoration-style: none;
+            text-decoration-line: none;
+            cursor: pointer;
+        }
+</style>
+
+<script>
+    var passwordInput = document.getElementById("passwordInput");
+    var togglePassword = document.getElementById("togglePassword");
+
+    togglePassword.addEventListener("click", function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.classList.remove("fa-eye-slash");
+            togglePassword.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password";
+            togglePassword.classList.remove("fa-eye");
+            togglePassword.classList.add("fa-eye-slash");
+        }
+    });
+</script>

@@ -1,0 +1,172 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using NetBanking.Core.Application.Enums;
+@using NetBanking.Core.Application.ViewModel.Beneficiary;
+@using NetBanking.Core.Application.ViewModel.CreditCard;
+@using NetBanking.Core.Application.ViewModel.SavingAccount;
+@using NetBanking.Core.Application.ViewModel.Transaction;
+@inject IHttpContextAccessor httpContextAccessor
+@model SaveTransactionVM;
+@{
+    ViewData["Title"] = "Pago Beneficiario";
+    List<BeneficiaryVM> beneficiaryVMs = ViewBag.Beneficiaries;
+    List<SavingAccountVM> savingAccountVMs = ViewBag.SavingAccounts;
+
+    Model.TransactionTypeId = (int)TransactionType.PagoDeTarjetaDeCredito;
+}
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center pt-5 mt-5 m-1">
+            <div class="col-md-6 col-sm-8 col-xl-4 col-lg-5 formulario">
+                @if (Model.HasError)
+                {
+                    <div class="alert bg-white alert-dismissible fade show mb-2" role="alert">
+                        <h2 class="text-dark">@Model.ErrorMessage</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form method="post" asp-controller="Payment" asp-action="PaymentBeneficiary" enctype="multipart/form-data">
+
+                    <div class="form-group text-center pt-3">
+                        <h1 class="text-light">Pago Beneficiario</h1>
+                    </div>
+
+
+                    <div class="form-group mx-sm-4 pt-3 mb-2">
+                        <select asp-for="DestinationAccountNumber" asp-items="@(new SelectList(beneficiaryVMs,"IdentifyingNumberofProduct", "Name"))" type="text" class="form-select mb-3" required>
+                            <option value="0">Seleccione Beneficiario</option>
+                        </select>
+                        <span asp-validation-for="DestinationAccountNumber" class="text-white"> </span>
+                    </div>
+                  
+                    <div class="form-group mx-sm-4 pt-3 mb-2">
+                        <select asp-for="OriginAccountNumber" asp-items="@(new SelectList(savingAccountVMs,"IdentifyingNumber", "IdentifyingNumber"))" type="text" class="form-select mb-3" required>
+                            <option value="0">Seleccione la Cuenta donde pagará</option>
+                        </select>
+                        <span asp-validation-for="OriginAccountNumber" class="text-white"> </span>
+                    </div>
+
+
+                    <div class="form-group mx-sm-4 pt-3 mb-2">
+                        <input asp-for="Amount" class="form-control" placeholder="Ingrese la Cantidad">
+                        <span asp-validation-for="Amount" class="text-white"> </span>
+                    </div>
+                  
+                    <input asp-for="TransactionTypeId" class="form-control" hidden>
+                    <div class="form-group text-center mt-4 mb-5">
+                        <button type="submit" class="btn btn-primary btn-outline-dark" style="background-color: #2f5b75; color: white;">Realizar Pago</button>
+                        <a asp-controller="Client" asp-action="Index" class="btn btn-dark">Volver atras</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+<script>
+    function toggleAdminSection() {
+        var isAdminSelect = document.getElementById('isAdminSelect');
+        var clientSection = document.getElementById('clientSection');
+        clientSection.style.display = isAdminSelect.value === 'false' ? 'block' : 'none';
+    }
+    toggleAdminSection();
+</script>
+
+<style>
+    body {
+        background-color: #dcd2ff;
+    }
+
+    .formulario {
+        background: rgba(0, 0, 0, .1);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+        color: white;
+    }
+
+
+    .form-control {
+        border-style: none;
+        transition: 0.5s ease-in;
+        outline: none;
+        box-shadow: none;
+    }
+
+        .form-control:focus {
+            background: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: black;
+        }
+
+    .ingresar {
+        background: #222A3F;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: 700 !important;
+        color: white;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+        transition: 0.5s ease-in;
+    }
+
+        .ingresar:hover {
+            color: white;
+        }
+
+    .olvide {
+        color: white;
+        text-decoration-style: none;
+        text-decoration-line: none;
+    }
+
+        .olvide:hover {
+            color: white;
+            text-decoration-style: none;
+            text-decoration-line: none;
+            cursor: pointer;
+        }
+
+    .olvide1 {
+        color: white;
+        text-decoration-style: none;
+        text-decoration-line: none;
+        font-size: 20px;
+        font-weight: 700 !important;
+        padding: 10px;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, .5);
+    }
+
+        .olvide1:hover {
+            color: white;
+            text-decoration-style: none;
+            text-decoration-line: none;
+            cursor: pointer;
+        }
+</style>
+
+<script>
+    var passwordInput = document.getElementById("passwordInput");
+    var togglePassword = document.getElementById("togglePassword");
+
+    togglePassword.addEventListener("click", function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.classList.remove("fa-eye-slash");
+            togglePassword.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password";
+            togglePassword.classList.remove("fa-eye");
+            togglePassword.classList.add("fa-eye-slash");
+        }
+    });
+</script>

@@ -1,0 +1,122 @@
+﻿@using NetBanking.Core.Application.ViewModel.Products;
+@model DashBoardStatitics;
+<div>
+    <div class="container mt-2">
+        <h1 class="text-center">DashBoard</h1>
+        <div class="row col-12">
+            <div class="col-6  mt-2 mb-2">
+                <label class="form-label offset-2 text-center">Cantidad de transacciones realizadas en el sistema</label>
+                <canvas  id="transaccionesChart"></canvas>
+            </div>
+            <div class="col-6 mt-2 mb-2">
+                <label class="form-label offset-3 text-center">Cantidad de clientes activos y inactivos</label>
+                <canvas id="clientesChart"></canvas>
+            </div>
+            <div class="col-6 mt-2">
+                <label class="form-label offset-3 text-center">Cantidad de pagos realizados</label>
+                <canvas id="pagosChart"></canvas>
+            </div>
+            <div class="col-6 mt-2">
+                <label class="form-label offset-2 text-center">Cantidad de productos asignados a los clientes</label>
+                <canvas id="productosChart"></canvas>
+            </div>
+           
+    </div>
+   
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const clientes = document.getElementById('clientesChart');
+    const transacciones = document.getElementById('transaccionesChart');
+    const productos = document.getElementById('productosChart');
+    const pagos = document.getElementById('pagosChart');
+
+    new Chart(clientes, {
+        type :'bar',
+        data: {
+            labels: ['Clientes Activos','Clientes Inactivos',],
+            datasets: [{
+                label: 'Clientes Activos',
+                data: [@Model.TotalActiveClients, @Model.TotalInactiveClients],
+                backgroundColor: [
+                    '#0ffff7',
+                    '#0f3047'
+                ],
+                borderColor: [
+                    '#0d566f',
+                    '#0d566f'
+                ],
+                borderWidth: 1
+            }]
+        }
+    });
+
+    new Chart(transacciones, {
+        type: 'bar',
+        data: {
+            labels: ['Totales', 'Hoy',],
+            datasets: [{
+                label: 'Transacciones',
+                data: [@Model.TotalTransactions, @Model.DayTransactions],
+                backgroundColor: [
+                    '#0ffff7',
+                    '#0f3047'
+                ],
+                borderColor: [
+                    '#0d566f',
+                    '#0d566f'
+                ],
+                borderWidth: 1
+            }]
+        }
+    });
+
+
+    new Chart(productos, {
+        type: 'pie',
+        data: {
+            labels: [
+                'Tarjeta de Credito',
+                'Cuentas de Ahorro',
+                'Prestamos'
+            ],
+            datasets: [{
+                label: 'Productos',
+                data: [@Model.TotalCreditCards, @Model.TotalSavingAccounts, @Model.TotalLoans],
+                backgroundColor: [
+                    '#06cedb ',
+                    'rgb(54, 162, 235)',
+                    '#6091f5'
+                ],
+                hoverOffset: 4
+            }]
+        }
+    });
+
+    new Chart(pagos, {
+        type: 'doughnut',
+        data: {
+                labels: [
+                    'Totales',
+                    'Hoy'
+                ],
+                datasets: [{
+                    label: 'Pagos',
+                    data: [@Model.TotalPayments, @Model.DayPayments],
+                    backgroundColor: [
+                    '#06cedb',
+                        'rgb(54, 162, 235)'
+                    ],
+                    hoverOffset: 4
+                }]
+ 
+        }
+    });
+
+   
+    
+
+</script>

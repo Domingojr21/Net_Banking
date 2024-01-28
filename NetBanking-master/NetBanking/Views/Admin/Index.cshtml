@@ -1,0 +1,157 @@
+﻿@using Microsoft.JSInterop;
+@using NetBanking.Core.Application.Dtos.Account;
+@using NetBanking.Core.Application.Dtos.User;
+@using NetBanking.Core.Application.Helpers;
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@model List<UserDTO>
+
+@{
+    
+    ViewData["Title"] = "Home";
+    var userInSession = httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
+    string filter = "Admin";
+    string userType = "";
+}
+@{
+    filter = ViewBag.Filter != null ? ViewBag.Filter : "Admin";
+    userType = filter == "Admin" ? "Admin" : "Client";
+
+    string adminUrlWithParam = Url.Action("UpdateFilter", "Admin", new { newFilter = "Client"});
+    string clientUrlWithParam = Url.Action("UpdateFilter", "Admin", new { newFilter = "Admin" });
+
+}
+
+
+<section>
+    <div class="container mt-2">
+        <div class="row">
+            <div class="col-10 offset-1">
+                <h2 class="bg-primary text-center">Users</h2>
+
+                <div class="container mb-3 float-end">
+                    <a asp-controller="User" asp-action="Register" class="btn btn-outline-success fw-bold">Create User </a>
+                </div>
+
+                <div class="col-4">
+                    <select class="form-control mt-2 col-4" name="newFilter" id="filterSelect" onchange="updateFilter()">
+                        <option value="">@userType</option>
+                        <option value="@adminUrlWithParam">Admins</option>
+                        <option value="@clientUrlWithParam">Clients</option>
+                    </select>
+                </div>
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Cedula</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count() > 0)
+                        {
+                            @foreach (var user in Model.Where(x => x.Roles.Contains(filter)))
+                            {
+                                <tr>
+                                    <td>@user.UserName</td>
+                                    <td>@user.FirstName</td>
+                                    <td>@user.LastName</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.Cedula</td>
+                                    @if (user.UserName != "mingo")
+                                    {
+                                        @if (user.UserName != userInSession.UserName)
+                                        {
+                                        <td>
+                                      
+                                            <form id="userStatusForm" asp-controller="Admin" asp-action="ChangeUserStatus" method="post">
+                                                <input type="hidden" name="userName" id="userNameInput" value="@user.UserName" />
+                                                    @if (user.IsActive)
+                                                    {
+                                                        <button type="submit" id="userStatusButton" class="btn btn-sm btn-outline-danger">
+                                                        <span>Inactivar</span>
+                                                    </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="submit" id="userStatusButton" class="btn btn-sm btn-outline-success">
+                                                        <span>Activar</span>
+
+                                                    </button>
+                                                    }
+                                            </form>
+                                            <div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-danger">
+                                                            <h5 class="modal-title" id="statusChangeModalLabel">Confirmar cambio de estado</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            ¿Está seguro de que desea cambiar el estado del usuario?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                            <button type="button" id="confirmStatusChangeButton" class="btn btn-primary">Confirmar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                    </td>
+                                    <td>
+                                            <a asp-controller="User" asp-action="ResetPassword" asp-route-email="@user.Email" class="text-primary mb-3 btn btn-outline-primary">Change Password</a>
+                                    </td>
+
+                                    }
+                                        <td>
+
+                                            @if (user.UserName != userInSession.UserName)
+                                            {
+                                                @if (user.Roles.Contains("Client"))
+                                                {
+                                                    <a class="btn btn-outline-info" asp-controller="User" asp-action="UpdateClient" asp-route-userId="@user.UserId">Editar</a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-outline-info" asp-controller="User" asp-action="UpdateUser" asp-route-userId="@user.UserId">Editar</a>
+                                                }
+                                            }
+
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function updateFilter() {
+        var filterSelect = document.getElementById('filterSelect');
+        var selectedValue = filterSelect.options[filterSelect.selectedIndex].value;
+        window.location.href = selectedValue; 
+    }
+
+    document.getElementById('userStatusButton').addEventListener('click', function (e) {
+        e.preventDefault();
+        $('#statusChangeModal').modal('show');
+    });
+
+    document.getElementById('confirmStatusChangeButton').addEventListener('click', function (e) {
+        document.getElementById('userStatusForm').submit();
+    });
+
+</script>
+
+
+
